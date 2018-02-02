@@ -65,7 +65,7 @@ end
 end
 
 subj = {[sprintf('%s',subject{jj})']};
-cond = {'noTMS','l_ips2'};
+cond = {'no_tms','l_ips2'};
 primary_err_lo_right_subj = [];
 median_primary_err_lo_right_group = [];
 
@@ -108,7 +108,7 @@ primary_err_hi_right_subj_ind =[];
 
 for cc =1:length(cond);
 for ss = 1:length(subj);
-    filename = sprintf('/Volumes/hyper/experiments/Grace/TMS_Priority/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
+    filename = sprintf('/Volumes/hyper/experiments/Grace/tms_sessions/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
     resultsfile = load(filename)
     primary_err_hi_right_subj{ss,cc} =  resultsfile.ii_results_hi.no_break_right_primary_err_z_new;
     median_primary_err_hi_right(ss,cc) = [median_primary_err_hi_right_group;
