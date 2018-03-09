@@ -39,7 +39,7 @@ mycolors_c = {c3 c15 c11};
 parspec = [c1; c2; c3; c4; c5; c6; c7; c8; c9; c10; c11; c12; c13; c14; c15; c16];
 %% PRIMARY EYE POSITION
 %subject = {'subj01', 'subj02', 'subj03','subj04'};
-subject = {'subj06'};
+subject = {'subj04'};
 
 %subj = {'gh','JF','MP','pk','EK','mr','cc'};
 %subj = {'gh','MP','pk','EK','mr','cc'};
@@ -54,7 +54,7 @@ primary_err_lo_left_subj_ind =[];
 
 for cc =1:length(cond);
 for ss = 1:length(subj);
-    filename = sprintf('/Volumes/hyper/experiments/Grace/tms_sessions/%s/%s/ii_results_lo.mat',subj{ss},cond{cc});
+    filename = sprintf('/Volumes/hyper/experiments/Grace/TMS_Priority/%s/%s/ii_results_lo.mat',subj{ss},cond{cc});
     resultsfile = load(filename)
     primary_err_lo_left_subj{ss,cc} =  resultsfile.ii_results_lo.no_break_left_primary_err_z_new;
     median_primary_err_lo_left(ss,cc) = [median_primary_err_lo_left_group;
@@ -71,7 +71,7 @@ median_primary_err_lo_right_group = [];
 
 for cc =1:length(cond);
 for ss = 1:length(subj);
-    filename = sprintf('/Volumes/hyper/experiments/Grace/tms_sessions/%s/%s/ii_results_lo.mat',subj{ss},cond{cc});
+    filename = sprintf('/Volumes/hyper/experiments/Grace/TMS_Priority/%s/%s/ii_results_lo.mat',subj{ss},cond{cc});
     resultsfile = load(filename)
     primary_err_lo_right_subj{ss,cc} =  resultsfile.ii_results_lo.no_break_right_primary_err_z_new;
     median_primary_err_lo_right(ss,cc) = [median_primary_err_lo_right_group;
@@ -90,7 +90,7 @@ primary_err_hi_left_subj_ind =[];
 
 for cc =1:length(cond);
 for ss = 1:length(subj);
-    filename = sprintf('/Volumes/hyper/experiments/Grace/tms_sessions/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
+    filename = sprintf('/Volumes/hyper/experiments/Grace/TMS_Priority/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
     resultsfile = load(filename)
     primary_err_hi_left_subj{ss,cc} =  resultsfile.ii_results_hi.no_break_left_primary_err_z_new;
     median_primary_err_hi_left(ss,cc) = [median_primary_err_hi_left_group;
@@ -108,7 +108,7 @@ primary_err_hi_right_subj_ind =[];
 
 for cc =1:length(cond);
 for ss = 1:length(subj);
-    filename = sprintf('/Volumes/hyper/experiments/Grace/tms_sessions/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
+    filename = sprintf('/Volumes/hyper/experiments/Grace/TMS_Priority/%s/%s/ii_results_hi.mat',subj{ss},cond{cc});
     resultsfile = load(filename)
     primary_err_hi_right_subj{ss,cc} =  resultsfile.ii_results_hi.no_break_right_primary_err_z_new;
     median_primary_err_hi_right(ss,cc) = [median_primary_err_hi_right_group;
