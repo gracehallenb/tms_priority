@@ -1,9 +1,9 @@
 % based on plot_topoTMS_tcs.m by TCS, 2018 
-% naive attempt to use ii_stats files to load/plot topoTMS data...
+
 cd ('/Volumes/hyper/experiments/Grace/TMS_Priority')
 data_dir = '/Volumes/hyper/experiments/Grace/TMS_Priority';
 
-subj = {'subj01','subj02','subj03','subj04'}; 
+subj = {'subj01','subj02', 'subj03','subj04'}; 
 cond = {'noTMS','l_spcs','l_ips2'};
 
 contra = [NaN 2 2]; % 1 = LEFT, 2 = RIGHT, NaN = no sorting
@@ -12,11 +12,11 @@ nblank = length(subj)*length(cond)*396;
 
 all_subj = nan(nblank,1);
 all_cond = nan(nblank,1);
-all_hemi = nan(nblank,1); % probably redundant...
-all_hemipos =nan(nblank,1);
+all_hemi = nan(nblank,1); 
+all_hemipos =nan(nblank,1); % probably redundant...
 all_run  = nan(nblank,1);
 all_pri =  nan(nblank,1);
-all_targ = nan(nblank,2); % target coords
+all_targ = nan(nblank,2); %target coords
 
 all_sacc_p = nan(nblank,2); % primary, final saccade points (from ii_stats)
 all_sacc_f = nan(nblank,2);
@@ -46,10 +46,7 @@ for ss = 1:length(subj)
         for rr = 1:length(ii_stats)
             
             
-        % loop over runs in DATA, extract TarX, TarY for each trial (so we
-        % can sort into hemis)
-         
-                       
+   
         myf = dir(sprintf('%s/%s/%s/TASK/',data_dir,subj{ss},cond{cc}));
         myf = myf(~[myf.isdir]);
         this_run = load(sprintf('%s/%s/%s/TASK/%s',data_dir,subj{ss},cond{cc},myf(rr).name)); %myscreen, task, tasktiming, stimulus info
@@ -118,138 +115,131 @@ cond_colors = lines(length(cu));
 % first, let's just plot L/R err for primary, final saccade for each
 % condition
 
+subj_lege = {'subj01','subj02','subj03','subj04'}; 
+subj_col = parula(length(subj));
 figure; err_ax = []; srt_ax = [];
+priu = [31:32];
+hu = unique(all_hemi);
 
+priority_id ={'hi','lo'};
+hemifield = {'L', 'R'};
+
+for ii =1:length(hu);
 for cc = 1:length(cu)
     % subj x hemi
     
     tmp_err_p = nan(length(subj),2);
     tmp_err_f = nan(length(subj),2);
     tmp_srt   = nan(length(subj),2);
-    
-%     tmp_err_p_hi = nan(length(subj),2);
-%     tmp_err_f_hi = nan(length(subj),2);
-%     tmp_srt_hi   = nan(length(subj),2);
-%     
-%     tmp_err_p_lo = nan(length(subj),2);
-%     tmp_err_f_lo = nan(length(subj),2);
-%     tmp_srt_lo   = nan(length(subj),2);
-%     
-    for ss = 1:length(subj)
-        for ii = 1:2 % L, R
-            for pp = 31:32;
+      
+    for ss = 1:length(subj);
+        
+        %break it down based on priority
+            for pp = 1:length(priu); %priority, 31 == high, 32 == low
                 
-                 thisidx = all_subj==ss & all_cond==cc & all_hemi==ii & all_pri== pp  & ~excl_trial;
-                 
-%             thisidx_hi = all_subj==ss & all_cond==cc & all_hemi==ii & all_pri==31  & ~excl_trial;
-%             thisidx_lo = all_subj==ss & all_cond==cc & all_hemi==ii & all_pri==32 & ~excl_trial;
-%             
-            tmp_err_p(ss,ii) = mean(all_err_p(thisidx));
-            tmp_err_p_sem(ss,ii) = std(all_err_p(thisidx))/sqrt(length(all_err_p(thisidx)));
-            tmp_err_p_var(ss,ii) = var(all_err_p(thisidx));
-            
-%             tmp_err_p_hi(ss,ii) = mean(all_err_p(thisidx_hi));
-%             tmp_err_p_sem_hi(ss,ii) = std(all_err_p(thisidx_hi))/sqrt(length(all_err_p(thisidx_hi)));
-%             tmp_err_p_var_hi(ss,ii) = var(all_err_p(thisidx_hi));
-            
-            tmp_err_f(ss,ii) = mean(all_err_f(thisidx));
-            tmp_err_f_sem(ss,ii) = std(all_err_f(thisidx))/sqrt(length(all_err_f(thisidx))) ;
-            tmp_err_f_var(ss,ii) = var(all_err_f(thisidx));
-            tmp_srt(ss,ii) = mean(all_srt(thisidx));
-            
-%             tmp_err_f_hi(ss,ii) = mean(all_err_f(thisidx_hi));
-%             tmp_err_f_sem_hi(ss,ii) = std(all_err_f(thisidx_hi))/sqrt(length(all_err_f(thisidx_hi))) ;
-%             tmp_err_f_var_hi(ss,ii) = var(all_err_f(thisidx_hi));
-%             tmp_srt_hi(ss,ii) = mean(all_srt(thisidx_hi));
-            
-%             tmp_err_p_lo(ss,ii) = mean(all_err_p(thisidx_lo));
-%             tmp_err_f_lo(ss,ii) = mean(all_err_f(thisidx_lo));
-%             tmp_srt_lo(ss,ii) = mean(all_srt(thisidx_lo));
-%             tmp_err_p_sem_lo(ss,ii) = std(all_err_p(thisidx_lo))/sqrt(length(all_err_p(thisidx_lo)));
-%             tmp_err_p_var_lo(ss,ii) = var(all_err_p(thisidx_lo));
-%             
-%             tmp_err_f_sem_lo(ss,ii) = std(all_err_f(thisidx_lo))/sqrt(length(all_err_f(thisidx_lo)));
-%             tmp_err_f_var_lo(ss,ii) = var(all_err_f(thisidx_lo));
-figure
-subplot(3,3,cc)
-plot([1 2], tmp_err_p(pp)' ,'-','Color',cond_colors(cc,:));
-hold on;
+                thisidx = all_subj==ss & all_cond==cc & all_hemi==ii & all_pri== priu(pp)  & ~excl_trial;
+                
+                tmp_err_p(ss,pp) = mean(all_err_p(thisidx));
+                tmp_err_p_sem(ss,pp) = std(all_err_p(thisidx))/sqrt(length(all_err_p(thisidx)));
+                tmp_err_p_var(ss,pp) = var(all_err_p(thisidx));
+                
+                tmp_err_f(ss,pp) = mean(all_err_f(thisidx));
+                tmp_err_f_sem(ss,pp) = std(all_err_f(thisidx))/sqrt(length(all_err_f(thisidx)));
+                tmp_err_f_var(ss,pp) = var(all_err_f(thisidx));
+                tmp_srt(ss,pp) = mean(all_srt(thisidx));
 
             end 
             
-        end
+        
     end
- 
-%     % primary err....
-%     err_ax(end+1) = subplot(3,length(cu),cc); hold on;
-%     
-%  
-%     plot([1 2],tmp_err_p.' ,'-','Color',[0.5 0.5 0.5]); %compare left hi/lo
-% 
-% % 
-% %  
-% %     plot([1 2],tmp_err_p_hi.' ,'-','Color',[0.5 0.5 0.5]); %compare left hi/lo
-% %     hold on;
-% %     plot([3,4],tmp_err_p_lo.','-','Color',[0.5 0.5 0.5]);
-%     
-%     
-%     % and mean
-%     plot([1 2],mean(tmp_err_p,1),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
-% %     plot([1 2],mean(tmp_err_p_hi,1),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
-% %     plot([3 4],mean(tmp_err_p_lo,1),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
-% 
-%     title(cond{cc});
-%     set(gca,'XTick',[1 2]);
-%     if cc == 1
-%         ylabel('Primary error (\circ)');
-%     end
-%     set(gca,'XTickLabel',{'Left','Right'});
-% 
-%     
-%     % final err....
-%     err_ax(end+1) = subplot(3,length(cu),cc+length(cu));   hold on;
-%     
-%     % plot indiv subj
-%     plot([1 2],tmp_err_f.','-','Color',[0.5 0.5 0.5]);
-%     plot([3 4],tmp_err_f.','-','Color',[0.5 0.5 0.5]);
-%     % and mean
-%     plot([1 2],mean(tmp_err_f,1),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',[1 1 1],'LineWidth',2);
-%         plot([3 4],mean(tmp_err_f,1),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',[1 1 1],'LineWidth',2);
-% 
-%     
-%     set(gca,'XTick',[1 2]);
-%     if cc == 1
-%         ylabel('Final error (\circ)');
-%     end
-%     
-%     set(gca,'XTickLabel',{'Left','Right'});
-%     
-%     
-%     % SRT
-%     srt_ax(end+1) = subplot(3,length(cu),cc+length(cu)*2); hold on;
-%     
-%     % plot indiv subj
-%     plot([1 2],tmp_srt.','-','Color',[0.5 0.5 0.5]);
-%      %plot([3 4],tmp_srt.','-','Color',[0.5 0.5 0.5]);
-%      
-%     % and mean
-%     plot([1 2],mean(tmp_srt,1),'s-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
-%         %plot([3 4],mean(tmp_srt,1),'s-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
-% 
-%     
-%     set(gca,'XTick',[1 2 3 4]);
-%     if cc == 1
-%         ylabel('Response time (ms)');
-%     end
-%     set(gca,'XTickLabel',{'Left H','Right H','Left L','Right L'});
+    
+
+    
+    for gg = 1:length(subj);
+        figure(1)
+        hold on;
+        subplot(3,3,cc)
+        this_x = [1 2] + (ii-1)*2;
+        plot(this_x, tmp_err_p(gg,:).', '-','Color',subj_col(gg,:));
+        if gg  == length(subj)
+            plot(this_x, mean(tmp_err_p),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
+        else
+        end
+        
+        if gg  == length(subj) && cc ==3
+            legend(subj_lege, 'mean')
+        else
+        end
+        title(cond{cc});
+        if cc == 1
+            ylabel('Primary error (\circ)');
+        end
+        set(gca, 'fontsize',14)
+        set(gca,'XTick',[1 2 3 4]);
+        set(gca,'XTickLabel',{'ipsi,hi','ipsi,lo','contra,hi','contra, lo'});
+      
+        
+    end
+  
+    
+    
+    for vv  = 1:length(subj)
+        subplot(3,3,cc+length(cu))
+        this_x = [1 2] + (ii-1)*2;
+        plot(this_x, tmp_err_f(vv,:).', '-','Color',subj_col(vv,:));
+        if vv  == length(subj)
+            plot(this_x, mean(tmp_err_f),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
+        else
+        end
+        
+        set(gca, 'fontsize',14)
+        set(gca,'XTick',[1 2 3 4]);
+        set(gca,'XTickLabel',{'ipsi,hi','ipsi,lo','contra,hi','contra, lo'});
+        if vv  == length(subj) & cc ==3
+            legend(subj_lege, 'mean')
+        else
+        end 
+        title(cond{cc});
+        if cc == 1
+            ylabel('Final error (\circ)');
+        end
+        
+        hold on;
+        ylim([0.5 2.5])
+        xlim([0 5])
+    end
+    
+    for kk =1:length(subj)
+        subplot(3,3,cc+length(cu)*2)
+        plot(this_x, tmp_srt(kk,:).', '-','Color',subj_col(kk,:));
+        hold on;
+        
+        if kk == length(subj)
+        plot(this_x, mean(tmp_srt),'o-','MarkerSize',8,'Color',cond_colors(cc,:),'MarkerFaceColor',cond_colors(cc,:),'LineWidth',2);
+        else 
+        end 
+        set(gca,'XTick',[0 1 2 3 4 5]);
+        set(gca,'XTickLabel',{'ipsi,hi','ipsi,lo','contra,hi','contra, lo'});
+        if kk  == length(subj) & cc ==3
+            legend(subj_lege, 'mean')
+        else
+        end 
+         if cc == 1
+            ylabel('SRT');
+        end
+        set(gca, 'fontsize',14)
+        set(gca,'XTick',[1 2 3 4]);
+        xlim([0 5])
+    end
+    
+end 
+
 
 end
 
-%match_ylim(srt_ax); match_ylim(err_ax);
-%set(srt_ax,'XLim',[0.5 2.5]); set(err_ax,'XLim',[0.5 2.5]);
 
 
-%% scatterplots like Fig. 2
+%% scatterplots like Fig. 2 (from Mackey & Curtis 2017)
 figure;
 cond_scatter_y = [2 3]; % different y axes
 cond_scatter_x = [1 1]; % and consistent x axis
